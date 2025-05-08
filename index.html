@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mustache Family</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      font-family: 'Inter', sans-serif;
+      background: #0a0e17;
+    }
+    .container {
+      border: 2px solid rgba(31, 37, 38, 0.5);
+      box-shadow: 0 0 15px rgba(31, 37, 38, 0.3);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: rgba(28, 37, 38, 0.2);
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+    }
+    .mustache {
+      transition: transform 0.1s ease;
+      animation: pulse 3s infinite;
+    }
+    .mustache:active {
+      transform: scale(0.95);
+    }
+    .mustache-clicked {
+      transform: scale(0.9) rotate(5deg);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .floating-text {
+      position: absolute;
+      pointer-events: none;
+      animation: float 0.7s ease-out forwards;
+      color: #6b7280;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+    @keyframes float {
+      0% { transform: translate(0, 0); opacity: 1; }
+      100% { transform: translate(calc(-30px + 60px * var(--random-x)), -60px); opacity: 0; }
+    }
+    .particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: url('mustache.png') no-repeat center;
+      background-size: contain;
+      pointer-events: none;
+      animation: particle 0.5s ease-out forwards;
+    }
+    @keyframes particle {
+      0% { transform: translate(0, 0); opacity: 1; }
+      100% { transform: translate(calc(-20px + 40px * var(--random-x)), calc(-20px + 40px * var(--random-y))); opacity: 0; }
+    }
+    .progress-bar {
+      background: #1c2526;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: #7f1d1f;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .custom-btn {
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: #1f2526;
+      background-image: linear-gradient(rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.1));
+    }
+    .custom-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+      background-color: #2d3536;
+    }
+    .custom-btn:active {
+      transform: scale(0.95);
+    }
+    .custom-btn:disabled {
+      background: #1c2526;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body class="text-gray-200 flex items-center justify-center min-h-screen p-4">
+  <div class="w-full max-w-md container">
+    <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
+    <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg">
+      <p class="text-2xl font-semibold">Mustaches: <span id="mustacheCount">0</span></p>
+      <p class="text-lg">Mustaches per click: <span id="clickPower">1</span></p>
+      <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span></p>
+      <div class="progress-bar h-2 mt-2">
+        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+      </div>
+    </div>
+    <div class="flex justify-center mb-4">
+      <img id="mustache" src="mustache.png" alt="Mustache" class="mustache w-49 h-49 cursor-pointer select-none">
+    </div>
+    <div class="grid grid-cols-1 gap-2">
+      <button id="upgradeClick" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>
+        Upgrade Click (Cost: <span id="clickCost">10</span>)
+      </button>
+      <button id="buyAuto" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        Buy Auto Mustache (Cost: <span id="autoCost">50</span>)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let mustaches = 0;
+    let clickPower = 1;
+    let autoPower = 0;
+    let clickUpgradeCost = 10;
+    let autoUpgradeCost = 50;
+    let isAnimating = false;
+
+    const mustacheCountEl = document.getElementById('mustacheCount');
+    const clickPowerEl = document.getElementById('clickPower');
+    const autoPowerEl = document.getElementById('autoPower');
+    const clickCostEl = document.getElementById('clickCost');
+    const autoCostEl = document.getElementById('autoCost');
+    const mustacheImg = document.getElementById('mustache');
+    const upgradeClickBtn = document.getElementById('upgradeClick');
+    const buyAutoBtn = document.getElementById('buyAuto');
+    const progressFill = document.getElementById('progressFill');
+
+    function loadGame() {
+      const saved = localStorage.getItem('mustacheFamily');
+      if (saved) {
+        const data = JSON.parse(saved);
+        mustaches = data.mustaches || 0;
+        clickPower = data.clickPower || 1;
+        autoPower = data.autoPower || 0;
+        clickUpgradeCost = data.clickUpgradeCost || 10;
+        autoUpgradeCost = data.autoUpgradeCost || 50;
+      }
+      updateUI();
+    }
+
+    function saveGame() {
+      localStorage.setItem('mustacheFamily', JSON.stringify({
+        mustaches,
+        clickPower,
+        autoPower,
+        clickUpgradeCost,
+        autoUpgradeCost
+      }));
+    }
+
+    function updateUI() {
+      mustacheCountEl.textContent = Math.floor(mustaches);
+      clickPowerEl.textContent = clickPower;
+      autoPowerEl.textContent = autoPower;
+      clickCostEl.textContent = clickUpgradeCost;
+      autoCostEl.textContent = autoUpgradeCost;
+      upgradeClickBtn.disabled = mustaches < clickUpgradeCost;
+      buyAutoBtn.disabled = mustaches < autoUpgradeCost;
+      const nextCost = Math.min(clickUpgradeCost, autoUpgradeCost);
+      const progress = Math.min((mustaches / nextCost) * 100, 100);
+      progressFill.style.width = `${progress}%`;
+    }
+
+    function createFloatingText(x, y, amount) {
+      const text = document.createElement('div');
+      text.className = 'floating-text';
+      text.textContent = `+${amount} Mustaches`;
+      text.style.left = `${x}px`;
+      text.style.top = `${y}px`;
+      text.style.setProperty('--random-x', Math.random());
+      document.body.appendChild(text);
+      setTimeout(() => text.remove(), 700);
+    }
+
+    function createParticle(x, y) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      particle.style.setProperty('--random-x', Math.random());
+      particle.style.setProperty('--random-y', Math.random());
+      document.body.appendChild(particle);
+      setTimeout(() => particle.remove(), 500);
+    }
+
+    mustacheImg.addEventListener('click', (e) => {
+      if (isAnimating) return;
+      isAnimating = true;
+      mustacheImg.classList.add('mustache-clicked');
+      setTimeout(() => {
+        mustacheImg.classList.remove('mustache-clicked');
+        isAnimating = false;
+      }, 100);
+      mustaches += clickPower;
+      createFloatingText(e.clientX, e.clientY, clickPower);
+      for (let i = 0; i < 3; i++) {
+        createParticle(e.clientX, e.clientY);
+      }
+      updateUI();
+      saveGame();
+    });
+
+    upgradeClickBtn.addEventListener('click', () => {
+      if (mustaches >= clickUpgradeCost) {
+        mustaches -= clickUpgradeCost;
+        clickPower += 1;
+        clickUpgradeCost = Math.round(clickUpgradeCost * 1.5);
+        updateUI();
+        saveGame();
+      }
+    });
+
+    buyAutoBtn.addEventListener('click', () => {
+      if (mustaches >= autoUpgradeCost) {
+        mustaches -= autoUpgradeCost;
+        autoPower += 1;
+        autoUpgradeCost = Math.round(autoUpgradeCost * 1.7);
+        updateUI();
+        saveGame();
+      }
+    });
+
+    setInterval(() => {
+      mustaches += autoPower / 10;
+      updateUI();
+      saveGame();
+    }, 100);
+
+    loadGame();
+  </script>
+</body>
+</html>
