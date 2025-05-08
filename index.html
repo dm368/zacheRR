@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mustache Family</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -12,6 +12,9 @@
       touch-action: manipulation;
       font-family: 'Inter', sans-serif;
       background: #0a0e17;
+      padding-bottom: 60px; /* Отступ снизу для панели вкладок */
+      margin: 0;
+      min-height: 100vh;
     }
     .container {
       border: 2px solid rgba(31, 37, 38, 0.5);
@@ -26,6 +29,9 @@
     .mustache {
       transition: transform 0.1s ease;
       animation: pulse 3s infinite;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
     }
     .mustache:active {
       transform: scale(0.95);
@@ -96,12 +102,17 @@
     }
     .tabs {
       position: fixed;
-      bottom: 1rem;
+      bottom: 0;
+      left: 0;
+      right: 0;
       width: 100%;
+      max-width: 100%;
       display: flex;
       justify-content: center;
       gap: 0.5rem;
       z-index: 10;
+      padding: 0.5rem 0;
+      background: #0a0e17;
     }
     .tab {
       width: 48px;
@@ -126,9 +137,9 @@
     }
   </style>
 </head>
-<body class="text-gray-200 flex flex-col items-center min-h-screen p-4">
+<body class="text-gray-200 flex flex-col items-center">
   <!-- Контейнер для динамического контента -->
-  <div id="content" class="w-full max-w-md mt-8">
+  <div id="content" class="w-full max-w-md mt-2">
     <!-- Начальный игровой контент -->
     <div class="container">
       <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
@@ -176,25 +187,8 @@
             <div class="container">
               <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
               <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg">
-                <p class="text-2xl font-semibold">Mustaches: <span id="mustacheCount">0</span></p>
-                <p class="text-lg">Mustaches per click: <span id="clickPower">1</span></p>
-                <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span></p>
-                <div class="progress-bar h-2 mt-2">
-                  <div id="progressFill" class="progress-fill" style="width: 0%"></div>
-                </div>
-              </div>
-              <div class="flex justify-center mb-4">
-                <img id="mustache" src="mustache.png" alt="Mustache" class="mustache w-49 h-49 cursor-pointer select-none">
-              </div>
-              <div class="grid grid-cols-1 gap-2">
-                <button id="upgradeClick" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>
-                  Upgrade Click (Cost: <span id="clickCost">10</span>)
-                </button>
-                <button id="buyAuto" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  Buy Auto Mustache (Cost: <span id="autoCost">50</span>)
-                </button>
+                <p Ditails-stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Buy Auto Mustache (Cost: <span id="autoCost">50</span>)
               </div>
             </div>
           `;
@@ -202,10 +196,10 @@
         } else {
           // Загрузка содержимого других страниц
           const pageContent = {
-            'page1': '<div class="w-full max-w-md container mt-8 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">1</h1></div>',
-            'page2': '<div class="w-full max-w-md container mt-8 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">2</h1></div>',
-            'page4': '<div class="w-full max-w-md container mt-8 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">4</h1></div>',
-            'page5': '<div class="w-full max-w-md container mt-8 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">5</h1></div>'
+            'page1': '<div class="w-full max-w-md container mt-2 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">1</h1></div>',
+            'page2': '<div class="w-full max-w-md container mt-2 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">2</h1></div>',
+            'page4': '<div class="w-full max-w-md container mt-2 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">4</h1></div>',
+            'page5': '<div class="w-full max-w-md container mt-2 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">5</h1></div>'
           };
           contentDiv.innerHTML = pageContent[page] || '<p>Страница не найдена</p>';
         }
@@ -235,7 +229,6 @@
       let autoPower = 0;
       let clickUpgradeCost = 10;
       let autoUpgradeCost = 50;
-      let isAnimating = false;
 
       const mustacheCountEl = document.getElementById('mustacheCount');
       const clickPowerEl = document.getElementById('clickPower');
@@ -255,7 +248,7 @@
           clickPower = data.clickPower || 1;
           autoPower = data.autoPower || 0;
           clickUpgradeCost = data.clickUpgradeCost || 10;
-          autoUpgradeCost = data.clickUpgradeCost || 50;
+          autoUpgradeCost = data.autoUpgradeCost || 50;
         }
         updateUI();
       }
@@ -307,25 +300,51 @@
         setTimeout(() => particle.remove(), 500);
       }
 
-      if (mustacheImg) {
-        mustacheImg.addEventListener('click', (e) => {
-          if (isAnimating) return;
-          isAnimating = true;
-          mustacheImg.classList.add('mustache-clicked');
-          const tapSound = new Audio('tap.wav');
-          tapSound.play().catch(() => {});
-          setTimeout(() => {
-            mustacheImg.classList.remove('mustache-clicked');
-            isAnimating = false;
-          }, 100);
-          mustaches += clickPower;
-          createFloatingText(e.clientX, e.clientY, clickPower);
-          for (let i = 0; i < 3; i++) {
-            createParticle(e.clientX, e.clientY);
+      function handleClick(e) {
+        e.preventDefault();
+        mustacheImg.classList.add('mustache-clicked');
+        const tapSound = new Audio('tap.wav');
+        tapSound.play().catch(() => {});
+        setTimeout(() => {
+          mustacheImg.classList.remove('mustache-clicked');
+        }, 100);
+        mustaches += clickPower;
+        createFloatingText(e.clientX || e.pageX, e.clientY || e.pageY, clickPower);
+        for (let i = 0; i < 3; i++) {
+          createParticle(e.clientX || e.pageX, e.clientY || e.pageY);
+        }
+        updateUI();
+        saveGame();
+      }
+
+      function handleTouch(e) {
+        e.preventDefault();
+        const rect = mustacheImg.getBoundingClientRect();
+        Array.from(e.touches).forEach(touch => {
+          const x = touch.clientX;
+          const y = touch.clientY;
+          // Проверка, находится ли касание внутри изображения усов
+          if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+            mustacheImg.classList.add('mustache-clicked');
+            const tapSound = new Audio('tap.wav');
+            tapSound.play().catch(() => {});
+            setTimeout(() => {
+              mustacheImg.classList.remove('mustache-clicked');
+            }, 100);
+            mustaches += clickPower;
+            createFloatingText(x, y, clickPower);
+            for (let i = 0; i < 3; i++) {
+              createParticle(x, y);
+            }
           }
-          updateUI();
-          saveGame();
         });
+        updateUI();
+        saveGame();
+      }
+
+      if (mustacheImg) {
+        mustacheImg.addEventListener('click', handleClick);
+        mustacheImg.addEventListener('touchstart', handleTouch, { passive: false });
       }
 
       if (upgradeClickBtn) {
