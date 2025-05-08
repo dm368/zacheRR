@@ -94,154 +94,275 @@
       box-shadow: none;
       cursor: not-allowed;
     }
+    .tabs {
+      position: fixed;
+      bottom: 1rem;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      z-index: 10;
+    }
+    .tab {
+      width: 48px;
+      height: 48px;
+      background-color: #1f2526;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #e4e4e7;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+    .tab:hover {
+      background-color: #2d3536;
+      transform: scale(1.05);
+    }
+    .tab.active {
+      background-color: #7f1d1f;
+      color: #e4e4e7;
+    }
   </style>
 </head>
-<body class="text-gray-200 flex items-center justify-center min-h-screen p-4">
-  <div class="w-full max-w-md container">
-    <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
-    <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg">
-      <p class="text-2xl font-semibold">Mustaches: <span id="mustacheCount">0</span></p>
-      <p class="text-lg">Mustaches per click: <span id="clickPower">1</span></p>
-      <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span></p>
-      <div class="progress-bar h-2 mt-2">
-        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+<body class="text-gray-200 flex flex-col items-center min-h-screen p-4">
+  <!-- Контейнер для динамического контента -->
+  <div id="content" class="w-full max-w-md mt-8">
+    <!-- Начальный игровой контент -->
+    <div class="container">
+      <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
+      <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg">
+        <p class="text-2xl font-semibold">Mustaches: <span id="mustacheCount">0</span></p>
+        <p class="text-lg">Mustaches per click: <span id="clickPower">1</span></p>
+        <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span></p>
+        <div class="progress-bar h-2 mt-2">
+          <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+        </div>
       </div>
-    </div>
-    <div class="flex justify-center mb-4">
-      <img id="mustache" src="mustache.png" alt="Mustache" class="mustache w-49 h-49 cursor-pointer select-none">
-    </div>
-    <div class="grid grid-cols-1 gap-2">
-      <button id="upgradeClick" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>
-        Upgrade Click (Cost: <span id="clickCost">10</span>)
-      </button>
-      <button id="buyAuto" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        Buy Auto Mustache (Cost: <span id="autoCost">50</span>)
-      </button>
+      <div class="flex justify-center mb-4">
+        <img id="mustache" src="mustache.png" alt="Mustache" class="mustache w-49 h-49 cursor-pointer select-none">
+      </div>
+      <div class="grid grid-cols-1 gap-2">
+        <button id="upgradeClick" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>
+          Upgrade Click (Cost: <span id="clickCost">10</span>)
+        </button>
+        <button id="buyAuto" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Buy Auto Mustache (Cost: <span id="autoCost">50</span>)
+        </button>
+      </div>
     </div>
   </div>
 
+  <!-- Фиксированная панель вкладок -->
+  <div class="tabs">
+    <div class="tab" data-page="page1">1</div>
+    <div class="tab" data-page="page2">2</div>
+    <div class="tab active" data-page="main">M</div>
+    <div class="tab" data-page="page4">4</div>
+    <div class="tab" data-page="page5">5</div>
+  </div>
+
   <script>
-    let mustaches = 0;
-    let clickPower = 1;
-    let autoPower = 0;
-    let clickUpgradeCost = 10;
-    let autoUpgradeCost = 50;
-    let isAnimating = false;
+    // Функция для загрузки страницы
+    function loadPage(page) {
+      const contentDiv = document.getElementById('content');
+      try {
+        if (page === 'main') {
+          // Загрузка основного игрового контента
+          contentDiv.innerHTML = `
+            <div class="container">
+              <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
+              <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg">
+                <p class="text-2xl font-semibold">Mustaches: <span id="mustacheCount">0</span></p>
+                <p class="text-lg">Mustaches per click: <span id="clickPower">1</span></p>
+                <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span></p>
+                <div class="progress-bar h-2 mt-2">
+                  <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="flex justify-center mb-4">
+                <img id="mustache" src="mustache.png" alt="Mustache" class="mustache w-49 h-49 cursor-pointer select-none">
+              </div>
+              <div class="grid grid-cols-1 gap-2">
+                <button id="upgradeClick" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>
+                  Upgrade Click (Cost: <span id="clickCost">10</span>)
+                </button>
+                <button id="buyAuto" class="custom-btn text-white font-semibold py-1.5 px-3 rounded-lg">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Buy Auto Mustache (Cost: <span id="autoCost">50</span>)
+                </button>
+              </div>
+            </div>
+          `;
+          initializeGame();
+        } else {
+          // Загрузка содержимого других страниц
+          const pageContent = {
+            'page1': '<div class="w-full max-w-md container mt-8 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">1</h1></div>',
+            'page2': '<div class="w-full max-w-md container mt-8 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">2</h1></div>',
+            'page4': '<div class="w-full max-w-md container mt-8 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">4</h1></div>',
+            'page5': '<div class="w-full max-w-md container mt-8 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">5</h1></div>'
+          };
+          contentDiv.innerHTML = pageContent[page] || '<p>Страница не найдена</p>';
+        }
 
-    const mustacheCountEl = document.getElementById('mustacheCount');
-    const clickPowerEl = document.getElementById('clickPower');
-    const autoPowerEl = document.getElementById('autoPower');
-    const clickCostEl = document.getElementById('clickCost');
-    const autoCostEl = document.getElementById('autoCost');
-    const mustacheImg = document.getElementById('mustache');
-    const upgradeClickBtn = document.getElementById('upgradeClick');
-    const buyAutoBtn = document.getElementById('buyAuto');
-    const progressFill = document.getElementById('progressFill');
-
-    function loadGame() {
-      const saved = localStorage.getItem('mustacheFamily');
-      if (saved) {
-        const data = JSON.parse(saved);
-        mustaches = data.mustaches || 0;
-        clickPower = data.clickPower || 1;
-        autoPower = data.autoPower || 0;
-        clickUpgradeCost = data.clickUpgradeCost || 10;
-        autoUpgradeCost = data.autoUpgradeCost || 50;
+        // Обновление активной вкладки
+        document.querySelectorAll('.tab').forEach(tab => {
+          tab.classList.toggle('active', tab.getAttribute('data-page') === page);
+        });
+      } catch (error) {
+        console.error('Ошибка загрузки страницы:', error);
+        contentDiv.innerHTML = '<p>Ошибка загрузки контента. Пожалуйста, проверьте наличие файлов или подключение.</p>';
       }
-      updateUI();
     }
 
-    function saveGame() {
-      localStorage.setItem('mustacheFamily', JSON.stringify({
-        mustaches,
-        clickPower,
-        autoPower,
-        clickUpgradeCost,
-        autoUpgradeCost
-      }));
-    }
+    // Обработчики кликов по вкладкам
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const page = tab.getAttribute('data-page');
+        loadPage(page);
+      });
+    });
 
-    function updateUI() {
-      mustacheCountEl.textContent = Math.floor(mustaches);
-      clickPowerEl.textContent = clickPower;
-      autoPowerEl.textContent = autoPower;
-      clickCostEl.textContent = clickUpgradeCost;
-      autoCostEl.textContent = autoUpgradeCost;
-      upgradeClickBtn.disabled = mustaches < clickUpgradeCost;
-      buyAutoBtn.disabled = mustaches < autoUpgradeCost;
-      const nextCost = Math.min(clickUpgradeCost, autoUpgradeCost);
-      const progress = Math.min((mustaches / nextCost) * 100, 100);
-      progressFill.style.width = `${progress}%`;
-    }
+    // Игровая логика
+    function initializeGame() {
+      let mustaches = 0;
+      let clickPower = 1;
+      let autoPower = 0;
+      let clickUpgradeCost = 10;
+      let autoUpgradeCost = 50;
+      let isAnimating = false;
 
-    function createFloatingText(x, y, amount) {
-      const text = document.createElement('div');
-      text.className = 'floating-text';
-      text.textContent = `+${amount} Mustaches`;
-      text.style.left = `${x}px`;
-      text.style.top = `${y}px`;
-      text.style.setProperty('--random-x', Math.random());
-      document.body.appendChild(text);
-      setTimeout(() => text.remove(), 700);
-    }
+      const mustacheCountEl = document.getElementById('mustacheCount');
+      const clickPowerEl = document.getElementById('clickPower');
+      const autoPowerEl = document.getElementById('autoPower');
+      const clickCostEl = document.getElementById('clickCost');
+      const autoCostEl = document.getElementById('autoCost');
+      const mustacheImg = document.getElementById('mustache');
+      const upgradeClickBtn = document.getElementById('upgradeClick');
+      const buyAutoBtn = document.getElementById('buyAuto');
+      const progressFill = document.getElementById('progressFill');
 
-    function createParticle(x, y) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = `${x}px`;
-      particle.style.top = `${y}px`;
-      particle.style.setProperty('--random-x', Math.random());
-      particle.style.setProperty('--random-y', Math.random());
-      document.body.appendChild(particle);
-      setTimeout(() => particle.remove(), 500);
-    }
+      function loadGame() {
+        const saved = localStorage.getItem('mustacheFamily');
+        if (saved) {
+          const data = JSON.parse(saved);
+          mustaches = data.mustaches || 0;
+          clickPower = data.clickPower || 1;
+          autoPower = data.autoPower || 0;
+          clickUpgradeCost = data.clickUpgradeCost || 10;
+          autoUpgradeCost = data.clickUpgradeCost || 50;
+        }
+        updateUI();
+      }
 
-    mustacheImg.addEventListener('click', (e) => {
-      if (isAnimating) return;
-      isAnimating = true;
-      mustacheImg.classList.add('mustache-clicked');
-      setTimeout(() => {
-        mustacheImg.classList.remove('mustache-clicked');
-        isAnimating = false;
+      function saveGame() {
+        localStorage.setItem('mustacheFamily', JSON.stringify({
+          mustaches,
+          clickPower,
+          autoPower,
+          clickUpgradeCost,
+          autoUpgradeCost
+        }));
+      }
+
+      function updateUI() {
+        if (mustacheCountEl) mustacheCountEl.textContent = Math.floor(mustaches);
+        if (clickPowerEl) clickPowerEl.textContent = clickPower;
+        if (autoPowerEl) autoPowerEl.textContent = autoPower;
+        if (clickCostEl) clickCostEl.textContent = clickUpgradeCost;
+        if (autoCostEl) autoCostEl.textContent = autoUpgradeCost;
+        if (upgradeClickBtn) upgradeClickBtn.disabled = mustaches < clickUpgradeCost;
+        if (buyAutoBtn) buyAutoBtn.disabled = mustaches < autoUpgradeCost;
+        if (progressFill) {
+          const nextCost = Math.min(clickUpgradeCost, autoUpgradeCost);
+          const progress = Math.min((mustaches / nextCost) * 100, 100);
+          progressFill.style.width = `${progress}%`;
+        }
+      }
+
+      function createFloatingText(x, y, amount) {
+        const text = document.createElement('div');
+        text.className = 'floating-text';
+        text.textContent = `+${amount} Mustaches`;
+        text.style.left = `${x}px`;
+        text.style.top = `${y}px`;
+        text.style.setProperty('--random-x', Math.random());
+        document.body.appendChild(text);
+        setTimeout(() => text.remove(), 700);
+      }
+
+      function createParticle(x, y) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        particle.style.setProperty('--random-x', Math.random());
+        particle.style.setProperty('--random-y', Math.random());
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 500);
+      }
+
+      if (mustacheImg) {
+        mustacheImg.addEventListener('click', (e) => {
+          if (isAnimating) return;
+          isAnimating = true;
+          mustacheImg.classList.add('mustache-clicked');
+          const tapSound = new Audio('tap.wav');
+          tapSound.play().catch(() => {});
+          setTimeout(() => {
+            mustacheImg.classList.remove('mustache-clicked');
+            isAnimating = false;
+          }, 100);
+          mustaches += clickPower;
+          createFloatingText(e.clientX, e.clientY, clickPower);
+          for (let i = 0; i < 3; i++) {
+            createParticle(e.clientX, e.clientY);
+          }
+          updateUI();
+          saveGame();
+        });
+      }
+
+      if (upgradeClickBtn) {
+        upgradeClickBtn.addEventListener('click', () => {
+          if (mustaches >= clickUpgradeCost) {
+            mustaches -= clickUpgradeCost;
+            clickPower += 1;
+            clickUpgradeCost = Math.round(clickUpgradeCost * 1.5);
+            updateUI();
+            saveGame();
+          }
+        });
+      }
+
+      if (buyAutoBtn) {
+        buyAutoBtn.addEventListener('click', () => {
+          if (mustaches >= autoUpgradeCost) {
+            mustaches -= autoUpgradeCost;
+            autoPower += 1;
+            autoUpgradeCost = Math.round(autoUpgradeCost * 1.7);
+            updateUI();
+            saveGame();
+          }
+        });
+      }
+
+      setInterval(() => {
+        mustaches += autoPower / 10;
+        updateUI();
+        saveGame();
       }, 100);
-      mustaches += clickPower;
-      createFloatingText(e.clientX, e.clientY, clickPower);
-      for (let i = 0; i < 3; i++) {
-        createParticle(e.clientX, e.clientY);
-      }
-      updateUI();
-      saveGame();
-    });
 
-    upgradeClickBtn.addEventListener('click', () => {
-      if (mustaches >= clickUpgradeCost) {
-        mustaches -= clickUpgradeCost;
-        clickPower += 1;
-        clickUpgradeCost = Math.round(clickUpgradeCost * 1.5);
-        updateUI();
-        saveGame();
-      }
-    });
+      loadGame();
+    }
 
-    buyAutoBtn.addEventListener('click', () => {
-      if (mustaches >= autoUpgradeCost) {
-        mustaches -= autoUpgradeCost;
-        autoPower += 1;
-        autoUpgradeCost = Math.round(autoUpgradeCost * 1.7);
-        updateUI();
-        saveGame();
-      }
-    });
-
-    setInterval(() => {
-      mustaches += autoPower / 10;
-      updateUI();
-      saveGame();
-    }, 100);
-
-    loadGame();
+    // Инициализация игры при загрузке страницы
+    initializeGame();
   </script>
 </body>
 </html>
