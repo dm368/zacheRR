@@ -12,16 +12,16 @@
       touch-action: manipulation;
       font-family: 'Inter', sans-serif;
       background: #0a0e17;
-      padding-bottom: 56px; /* Отступ снизу для панели вкладок */
+      padding-bottom: 56px;
       margin: 0;
       min-height: 100vh;
     }
     .container {
-      border: 1px solid rgba(31, 37, 38, 0.5); /* Уменьшена толщина границы */
-      box-shadow: 0 0 10px rgba(31, 37, 38, 0.2); /* Уменьшен эффект тени */
+      border: 1px solid rgba(31, 37, 38, 0.5);
+      box-shadow: 0 0 10px rgba(31, 37, 38, 0.2);
       border-radius: 1rem;
-      padding: 0.5rem; /* Уменьшен внутренний отступ */
-      background: rgba(28, 37, 38, 0.2);
+      padding: 0.5rem;
+      background: linear-gradient(to top, rgba(28, 37, 38, 0.4), rgba(100, 100, 100, 0.1));
     }
     h1 {
       font-family: 'Playfair Display', serif;
@@ -47,9 +47,17 @@
       position: absolute;
       pointer-events: none;
       animation: float 0.7s ease-out forwards;
-      color: #6b7280;
       font-weight: 800;
       font-size: 1.2rem;
+    }
+    .floating-text-normal {
+      color: #e4e4e7;
+    }
+    .floating-text-maxed {
+      color: #7f1d1f;
+    }
+    .floating-text-bonus {
+      color: #f59e0b;
     }
     @keyframes float {
       0% { transform: translate(0, 0); opacity: 1; }
@@ -86,8 +94,8 @@
       gap: 0.5rem;
       background-color: #1f2526;
       background-image: linear-gradient(rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.1));
-      padding: 0.375rem 0.75rem; /* Восстановлены исходные отступы */
-      font-size: 1rem; /* Восстановлен исходный размер шрифта */
+      padding: 0.375rem 0.75rem;
+      font-size: 1rem;
       font-weight: 600;
       border-radius: 0.5rem;
     }
@@ -104,19 +112,29 @@
       box-shadow: none;
       cursor: not-allowed;
     }
+    .custom-btn-two-lines {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.1rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
     .tabs {
       position: fixed;
       bottom: 0.5rem;
-      left: 0;
-      right: 0;
+      left: 50%;
+      transform: translateX(-50%);
       width: 100%;
-      max-width: 100%;
+      max-width: 280px;
       display: flex;
       justify-content: center;
       gap: 0.5rem;
       z-index: 10;
-      padding: 0.5rem 0;
-      background: #0a0e17;
+      padding: 0.5rem;
+      background: rgba(28, 37, 38, 0.2);
+      border: 1px solid rgba(31, 37, 38, 0.5);
+      box-shadow: 0 0 10px rgba(31, 37, 38, 0.2);
+      border-radius: 1rem;
     }
     .tab {
       width: 48px;
@@ -139,24 +157,159 @@
       background-color: #7f1d1f;
       color: #e4e4e7;
     }
+    .level-container {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    }
+    .level-number {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e4e4e7;
+      z-index: 2;
+    }
+    .progress-ring circle {
+      fill: none;
+      stroke: #1c2526;
+      stroke-width: 4;
+    }
+    .progress-ring .progress {
+      stroke: #facc15;
+      stroke-width: 4;
+      transition: stroke-dashoffset 0.3s ease;
+    }
+    .boost-btn {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      border: none;
+      background: none;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    .hotbar-btn {
+      color: #7f1d1f;
+    }
+    .level-btn {
+      color: #f59e0b;
+    }
+    .arrow-appear {
+      animation: slide-up 0.3s ease-out;
+    }
+    .arrow-disappear {
+      animation: slide-down 0.3s ease-out;
+    }
+    @keyframes slide-up {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes slide-down {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(20px); opacity: 0; }
+    }
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: #1f2526;
+      border: 1px solid rgba(31, 37, 38, 0.5);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      max-width: 300px;
+      z-index: 100;
+      animation: modal-pop 0.2s ease-out forwards;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+    @keyframes modal-pop {
+      to { transform: translate(-50%, -50%) scale(1); }
+    }
+    .energy-flask-container {
+      position: absolute;
+      left: 0.85rem;
+      top: 15.5rem;
+      width: 20px;
+      height: 190px;
+    }
+    .energy-flask {
+      width: 100%;
+      height: 100%;
+      background: url('flask.png') no-repeat center;
+      background-size: contain;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid #1e90ff;
+    }
+    .energy-liquid {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: #1c6ea4;
+      transition: height 0.3s ease;
+    }
+    .energy-counter-container {
+      position: absolute;
+      left: -0.25rem;
+      top: -3.5rem;
+      width: 70px;
+      text-align: center;
+      background: #1c2526;
+      border: 1px solid rgba(31, 37, 38, 0.5);
+      border-radius: 0.5rem;
+      padding: 0.25rem;
+    }
+    .energy-counter {
+      font-size: 0.65rem;
+      color: #e4e4e7;
+    }
   </style>
 </head>
 <body class="text-gray-200 flex flex-col items-center">
-  <!-- Контейнер для динамического контента -->
   <div id="content" class="w-full max-w-sm mt-2">
-    <!-- Начальный игровой контент -->
-    <div class="container">
+    <div class="container relative">
+      <div class="energy-flask-container">
+        <div class="energy-counter-container">
+          <p class="energy-counter">Energy: <span id="energyCount">1000</span>/<span id="energyMax">1000</span></p>
+        </div>
+        <div class="energy-flask">
+          <div id="energyLiquid" class="energy-liquid" style="height: 100%"></div>
+        </div>
+      </div>
       <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
-      <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg">
+      <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg relative">
+        <div class="level-container">
+          <svg class="progress-ring" width="40" height="40">
+            <circle cx="20" cy="20" r="16" />
+            <circle class="progress" cx="20" cy="20" r="16" stroke-dasharray="100" stroke-dashoffset="100" />
+          </svg>
+          <span id="levelNumber" class="level-number">1</span>
+        </div>
         <p class="text-2xl font-semibold">Mustaches: <span id="mustacheCount">0</span></p>
-        <p class="text-lg">Mustaches per click: <span id="clickPower">1</span></p>
-        <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span></p>
+        <p class="text-lg">Mustaches per click: <span id="clickPower">1</span><span id="clickPowerArrows"></span></p>
+        <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span><span id="autoPowerArrows"></span></p>
         <div class="progress-bar h-2 mt-2">
           <div id="progressFill" class="progress-fill" style="width: 0%"></div>
         </div>
       </div>
       <div class="flex justify-center mb-4">
-        <img id="mustache" src="mustache.png" alt="Mustache" class="mustache w-40 h-40 cursor-pointer select-none">
+        <img id="mustache" src="mustache.png" alt="Mustache" class="mustache w-60 h-60 cursor-pointer select-none">
       </div>
       <div class="grid grid-cols-1 gap-2">
         <button id="upgradeClick" class="custom-btn text-white">
@@ -167,11 +320,25 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           Buy Auto Mustache (Cost: <span id="autoCost">50</span>)
         </button>
+        <div class="grid grid-cols-2 gap-1">
+          <button id="upgradeEnergy" class="custom-btn custom-btn-two-lines text-white">
+            <div class="flex items-center gap-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Upgrade Energy
+            </div>
+            <span>(+<span id="energyUpgradeAmount">0.5</span>/s, Cost: <span id="energyCost">10</span>)</span>
+          </button>
+          <button id="upgradeEnergyMax" class="custom-btn custom-btn-two-lines text-white">
+            <div class="flex items-center gap-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Expand Flask
+            </div>
+            <span>(Next: <span id="energyMaxNext">2000</span>, Cost: <span id="energyMaxCost">100</span>)</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Фиксированная панель вкладок -->
   <div class="tabs">
     <div class="tab" data-page="page1">1</div>
     <div class="tab" data-page="page2">2</div>
@@ -179,21 +346,37 @@
     <div class="tab" data-page="page4">4</div>
     <div class="tab" data-page="page5">5</div>
   </div>
-
   <script>
-    // Функция для загрузки страницы
+    let gameState = null;
+    let gameInitialized = false;
+    let autoInterval = null;
+
     function loadPage(page) {
       const contentDiv = document.getElementById('content');
       try {
         if (page === 'main') {
-          // Загрузка основного игрового контента
           contentDiv.innerHTML = `
-            <div class="container">
+            <div class="container relative">
+              <div class="energy-flask-container">
+                <div class="energy-counter-container">
+                  <p class="energy-counter">Energy: <span id="energyCount">1000</span>/<span id="energyMax">1000</span></p>
+                </div>
+                <div class="energy-flask">
+                  <div id="energyLiquid" class="energy-liquid" style="height: 100%"></div>
+                </div>
+              </div>
               <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
-              <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg">
+              <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg relative">
+                <div class="level-container">
+                  <svg class="progress-ring" width="40" height="40">
+                    <circle cx="20" cy="20" r="16" />
+                    <circle class="progress" cx="20" cy="20" r="16" stroke-dasharray="100" stroke-dashoffset="100" />
+                  </svg>
+                  <span id="levelNumber" class="level-number">1</span>
+                </div>
                 <p class="text-2xl font-semibold">Mustaches: <span id="mustacheCount">0</span></p>
-                <p class="text-lg">Mustaches per click: <span id="clickPower">1</span></p>
-                <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span></p>
+                <p class="text-lg">Mustaches per click: <span id="clickPower">1</span><span id="clickPowerArrows"></span></p>
+                <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span><span id="autoPowerArrows"></span></p>
                 <div class="progress-bar h-2 mt-2">
                   <div id="progressFill" class="progress-fill" style="width: 0%"></div>
                 </div>
@@ -202,20 +385,42 @@
                 <img id="mustache" src="mustache.png" alt="Mustache" class="mustache w-60 h-60 cursor-pointer select-none">
               </div>
               <div class="grid grid-cols-1 gap-2">
-                <button id="upgradeClick" class="custom-btn text-white">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>
-                  Upgrade Click (Cost: <span id="clickCost">10</span>)
-                </button>
-                <button id="buyAuto" class="custom-btn text-white">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  Buy Auto Mustache (Cost: <span id="autoCost">50</span>)
-                </button>
+                <button id="upgradeClick" class="custom-btn text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>Upgrade Click (Cost: <span id="clickCost">10</span>)</button>
+                <button id="buyAuto" class="custom-btn text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Buy Auto Mustache (Cost: <span id="autoCost">50</span>)</button>
+                <div class="grid grid-cols-2 gap-1">
+                  <button id="upgradeEnergy" class="custom-btn custom-btn-two-lines text-white">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                      Upgrade Energy
+                    </div>
+                    <span>(+<span id="energyUpgradeAmount">0.5</span>/s, Cost: <span id="energyCost">10</span>)</span>
+                  </button>
+                  <button id="upgradeEnergyMax" class="custom-btn custom-btn-two-lines text-white">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                      Expand Flask
+                    </div>
+                    <span>(Next: <span id="energyMaxNext">2000</span>, Cost: <span id="energyMaxCost">100</span>)</span>
+                  </button>
+                </div>
               </div>
             </div>
           `;
-          initializeGame();
+          if (!gameInitialized) {
+            initializeGame();
+            gameInitialized = true;
+          } else {
+            restoreGameState();
+            attachEventListeners();
+            if (!autoInterval) {
+              startAutoInterval();
+            }
+          }
         } else {
-          // Загрузка содержимого других страниц
+          if (autoInterval) {
+            clearInterval(autoInterval);
+            autoInterval = null;
+          }
           const pageContent = {
             'page1': '<div class="w-full max-w-sm container mt-2 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">1</h1></div>',
             'page2': '<div class="w-full max-w-sm container mt-2 flex items-center justify-center h-64"><h1 class="text-6xl font-extrabold text-gray-200">2</h1></div>',
@@ -224,8 +429,6 @@
           };
           contentDiv.innerHTML = pageContent[page] || '<p>Страница не найдена</p>';
         }
-
-        // Обновление активной вкладки
         document.querySelectorAll('.tab').forEach(tab => {
           tab.classList.toggle('active', tab.getAttribute('data-page') === page);
         });
@@ -235,7 +438,595 @@
       }
     }
 
-    // Обработчики кликов по вкладкам
+    function initializeGame() {
+      window.gameData = {
+        mustaches: 0,
+        clickPower: 1,
+        autoPower: 0,
+        clickUpgradeCost: 10,
+        autoUpgradeCost: 50,
+        energy: 1000,
+        energyMax: 1000,
+        energyRegenRate: 0.5,
+        energyUpgradeLevel: 0,
+        energyMaxUpgradeLevel: 0,
+        progressMaxed: false,
+        level: 1,
+        levelProgress: 0,
+        levelThreshold: 1000,
+        levelingBonusActive: false,
+        levelBonusEndTime: 0,
+        modalOpen: false,
+        clickPowerHotbarVisible: false,
+        clickPowerLevelVisible: false,
+        autoPowerHotbarVisible: false,
+        autoPowerLevelVisible: false
+      };
+
+      loadGame();
+      attachEventListeners();
+      startAutoInterval();
+    }
+
+    function attachEventListeners() {
+      const mustacheImg = document.getElementById('mustache');
+      const upgradeClickBtn = document.getElementById('upgradeClick');
+      const buyAutoBtn = document.getElementById('buyAuto');
+      const upgradeEnergyBtn = document.getElementById('upgradeEnergy');
+      const upgradeEnergyMaxBtn = document.getElementById('upgradeEnergyMax');
+      const levelContainer = document.querySelector('.level-container');
+
+      if (mustacheImg) {
+        mustacheImg.removeEventListener('click', handleClick);
+        mustacheImg.removeEventListener('touchstart', handleTouch);
+        mustacheImg.addEventListener('click', handleClick);
+        mustacheImg.addEventListener('touchstart', handleTouch, { passive: false });
+      }
+      if (upgradeClickBtn) {
+        upgradeClickBtn.removeEventListener('click', handleUpgradeClick);
+        upgradeClickBtn.addEventListener('click', handleUpgradeClick);
+      }
+      if (buyAutoBtn) {
+        buyAutoBtn.removeEventListener('click', handleBuyAuto);
+        buyAutoBtn.addEventListener('click', handleBuyAuto);
+      }
+      if (upgradeEnergyBtn) {
+        upgradeEnergyBtn.removeEventListener('click', handleUpgradeEnergy);
+        upgradeEnergyBtn.addEventListener('click', handleUpgradeEnergy);
+      }
+      if (upgradeEnergyMaxBtn) {
+        upgradeEnergyMaxBtn.removeEventListener('click', handleUpgradeEnergyMax);
+        upgradeEnergyMaxBtn.addEventListener('click', handleUpgradeEnergyMax);
+      }
+      if (levelContainer) {
+        levelContainer.removeEventListener('click', showLevelModal);
+        levelContainer.addEventListener('click', showLevelModal);
+      }
+    }
+
+    function startAutoInterval() {
+      autoInterval = setInterval(() => {
+        const gain = getAutoPower() / 10;
+        gameData.mustaches += gain;
+        gameData.levelProgress += gain;
+        gameData.energy = Math.min(gameData.energyMax, gameData.energy + gameData.energyRegenRate / 10);
+        updateLevel();
+        updateUI();
+        saveGame();
+      }, 100);
+    }
+
+    function formatCost(cost) {
+      if (cost >= 10000) {
+        return Math.floor(cost / 1000) + 'к';
+      }
+      return cost;
+    }
+
+    function loadGame() {
+      const saved = localStorage.getItem('mustacheFamily');
+      if (saved) {
+        const data = JSON.parse(saved);
+        gameData.mustaches = data.mustaches || 0;
+        gameData.clickPower = data.clickPower || 1;
+        gameData.autoPower = data.autoPower || 0;
+        gameData.clickUpgradeCost = data.clickUpgradeCost || 10;
+        gameData.autoUpgradeCost = data.autoUpgradeCost || 50;
+        gameData.energy = data.energy || 1000;
+        gameData.energyMax = data.energyMax || 1000;
+        gameData.energyRegenRate = data.energyRegenRate || 0.5;
+        gameData.energyUpgradeLevel = data.energyUpgradeLevel || 0;
+        gameData.energyMaxUpgradeLevel = data.energyMaxUpgradeLevel || 0;
+        gameData.progressMaxed = data.progressMaxed || false;
+        gameData.level = data.level || 1;
+        gameData.levelProgress = data.levelProgress || 0;
+        gameData.levelThreshold = data.levelThreshold || 1000;
+        gameData.levelingBonusActive = data.levelBonusActive || false;
+        gameData.levelBonusEndTime = data.levelBonusEndTime || 0;
+        gameData.clickPowerHotbarVisible = data.clickPowerHotbarVisible || false;
+        gameData.clickPowerLevelVisible = data.clickPowerLevelVisible || false;
+        gameData.autoPowerHotbarVisible = data.autoPowerHotbarVisible || false;
+        gameData.autoPowerLevelVisible = data.autoPowerLevelVisible || false;
+        if (gameData.levelingBonusActive && gameData.levelBonusEndTime > Date.now()) {
+          setTimeout(() => {
+            gameData.levelingBonusActive = false;
+            gameData.clickPowerLevelVisible = false;
+            gameData.autoPowerLevelVisible = false;
+            animateArrowDisappear(document.querySelector('#clickPowerArrows .level-btn'));
+            animateArrowDisappear(document.querySelector('#autoPowerArrows .level-btn'));
+            updateUI();
+            saveGame();
+          }, gameData.levelBonusEndTime - Date.now());
+        } else {
+          gameData.levelingBonusActive = false;
+          gameData.clickPowerLevelVisible = false;
+          gameData.autoPowerLevelVisible = false;
+        }
+      }
+      updateUI();
+    }
+
+    function saveGame() {
+      localStorage.setItem('mustacheFamily', JSON.stringify(gameData));
+      gameState = { ...gameData };
+    }
+
+    function restoreGameState() {
+      if (gameState) {
+        gameData = { ...gameState };
+        if (gameData.levelingBonusActive && gameData.levelBonusEndTime > Date.now()) {
+          setTimeout(() => {
+            gameData.levelingBonusActive = false;
+            gameData.clickPowerLevelVisible = false;
+            gameData.autoPowerLevelVisible = false;
+            animateArrowDisappear(document.querySelector('#clickPowerArrows .level-btn'));
+            animateArrowDisappear(document.querySelector('#autoPowerArrows .level-btn'));
+            updateUI();
+            saveGame();
+          }, gameData.levelBonusEndTime - Date.now());
+        } else {
+          gameData.levelingBonusActive = false;
+          gameData.clickPowerLevelVisible = false;
+          gameData.autoPowerLevelVisible = false;
+        }
+        updateUI();
+      }
+    }
+
+    function updateLevel() {
+      while (gameData.levelProgress >= gameData.levelThreshold) {
+        gameData.levelProgress -= gameData.levelThreshold;
+        gameData.level++;
+        gameData.levelThreshold = Math.round(1000 * Math.pow(2, gameData.level - 1));
+        gameData.levelingBonusActive = true;
+        gameData.levelBonusEndTime = Date.now() + 30000;
+        gameData.clickPowerLevelVisible = true;
+        gameData.autoPowerLevelVisible = true;
+        setTimeout(() => {
+          gameData.levelingBonusActive = false;
+          gameData.clickPowerLevelVisible = false;
+          gameData.autoPowerLevelVisible = false;
+          animateArrowDisappear(document.querySelector('#clickPowerArrows .level-btn'));
+          animateArrowDisappear(document.querySelector('#autoPowerArrows .level-btn'));
+          updateUI();
+          saveGame();
+        }, 30000);
+      }
+    }
+
+    function getClickPower() {
+      let power = gameData.progressMaxed ? gameData.clickPower * 2 : gameData.clickPower;
+      return gameData.levelingBonusActive ? power * 2 : power;
+    }
+
+    function getAutoPower() {
+      let power = gameData.progressMaxed ? gameData.autoPower * 2 : gameData.autoPower;
+      return gameData.levelingBonusActive ? power * 2 : power;
+    }
+
+    function showModal(type) {
+      if (gameData.modalOpen) return;
+      gameData.modalOpen = true;
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      const modal = document.createElement('div');
+      modal.className = 'modal text-gray-200';
+      let title, message;
+      if (type === 'hotbar') {
+        title = 'Hotbar Boost';
+        message = 'Doubles your click and auto mustache gains when you have enough mustaches to buy an upgrade!';
+      } else if (type === 'level') {
+        title = 'Level Up Boost';
+        message = 'Doubles your click and auto mustache gains for 30 seconds after reaching a new level!';
+      } else if (type === 'levelInfo') {
+        title = 'Your Level';
+        message = `You are at Level ${gameData.level}. Each level increases the mustache requirement for the next level. Upon reaching a new level, you get a 30-second boost that doubles your click and auto mustache gains!`;
+      }
+      modal.innerHTML = `
+        <h2 class="text-xl font-semibold mb-2">${title}</h2>
+        <p class="text-sm mb-4">${message}</p>
+        <button class="custom-btn text-white w-full">Close</button>
+      `;
+      document.body.appendChild(overlay);
+      document.body.appendChild(modal);
+      modal.querySelector('button').addEventListener('click', () => {
+        overlay.remove();
+        modal.remove();
+        gameData.modalOpen = false;
+      });
+    }
+
+    function showLevelModal() {
+      showModal('levelInfo');
+    }
+
+    function animateArrowDisappear(btn) {
+      if (btn) {
+        btn.classList.remove('arrow-appear');
+        btn.classList.add('arrow-disappear');
+        setTimeout(() => {
+          if (btn.parentElement) btn.remove();
+        }, 300);
+      }
+    }
+
+    function updateArrows(container, isClickPower) {
+      const currentHotbarBtn = container.querySelector('.hotbar-btn');
+      const currentLevelBtn = container.querySelector('.level-btn');
+      const shouldShowHotbar = gameData.progressMaxed;
+      const shouldShowLevel = gameData.levelingBonusActive;
+      const hotbarVisibleKey = isClickPower ? 'clickPowerHotbarVisible' : 'autoPowerHotbarVisible';
+      const levelVisibleKey = isClickPower ? 'clickPowerLevelVisible' : 'autoPowerLevelVisible';
+
+      let buttons = [];
+
+      // Проверяем Hotbar Button
+      if (shouldShowHotbar && !gameData[hotbarVisibleKey]) {
+        buttons.push(`
+          <button class="boost-btn hotbar-btn arrow-appear">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="12" fill="currentColor"/>
+              <path d="M4 12l8-8 8 8-1.5 1.5L12 8l-6.5 5.5L4 12z" fill="#e4e4e7" />
+            </svg>
+          </button>
+        `);
+        gameData[hotbarVisibleKey] = true;
+      } else if (!shouldShowHotbar && gameData[hotbarVisibleKey]) {
+        animateArrowDisappear(currentHotbarBtn);
+        gameData[hotbarVisibleKey] = false;
+      } else if (shouldShowHotbar) {
+        buttons.push(`
+          <button class="boost-btn hotbar-btn">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="12" fill="currentColor"/>
+              <path d="M4 12l8-8 8 8-1.5 1.5L12 8l-6.5 5.5L4 12z" fill="#e4e4e7" />
+            </svg>
+          </button>
+        `);
+      }
+
+      // Проверяем Level Button
+      if (shouldShowLevel && !gameData[levelVisibleKey]) {
+        buttons.push(`
+          <button class="boost-btn level-btn arrow-appear">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="12" fill="currentColor"/>
+              <path d="M4 12l8-8 8 8-1.5 1.5L12 8l-6.5 5.5L4 12z" fill="#e4e4e7" />
+            </svg>
+          </button>
+        `);
+        gameData[levelVisibleKey] = true;
+      } else if (!shouldShowLevel && gameData[levelVisibleKey]) {
+        animateArrowDisappear(currentLevelBtn);
+        gameData[levelVisibleKey] = false;
+      } else if (shouldShowLevel) {
+        buttons.push(`
+          <button class="boost-btn level-btn">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="12" fill="currentColor"/>
+              <path d="M4 12l8-8 8 8-1.5 1.5L12 8l-6.5 5.5L4 12z" fill="#e4e4e7" />
+            </svg>
+          </button>
+        `);
+      }
+
+      container.innerHTML = buttons.join('');
+
+      if (container.innerHTML !== '') {
+        const hotbarBtn = container.querySelector('.hotbar-btn');
+        const levelBtn = container.querySelector('.level-btn');
+        if (hotbarBtn && levelBtn) {
+          hotbarBtn.style.marginLeft = '4px';
+          levelBtn.style.marginLeft = '4px';
+        } else if (hotbarBtn) {
+          hotbarBtn.style.marginLeft = '4px';
+        } else if (levelBtn) {
+          levelBtn.style.marginLeft = '4px';
+        }
+        if (hotbarBtn) {
+          hotbarBtn.removeEventListener('click', showModal.bind(null, 'hotbar'));
+          hotbarBtn.addEventListener('click', showModal.bind(null, 'hotbar'));
+        }
+        if (levelBtn) {
+          levelBtn.removeEventListener('click', showModal.bind(null, 'level'));
+          levelBtn.addEventListener('click', showModal.bind(null, 'level'));
+        }
+      }
+    }
+
+    function updateUI() {
+      const mustacheCountEl = document.getElementById('mustacheCount');
+      const clickPowerEl = document.getElementById('clickPower');
+      const autoPowerEl = document.getElementById('autoPower');
+      const upgradeClickBtn = document.getElementById('upgradeClick');
+      const buyAutoBtn = document.getElementById('buyAuto');
+      const upgradeEnergyBtn = document.getElementById('upgradeEnergy');
+      const upgradeEnergyMaxBtn = document.getElementById('upgradeEnergyMax');
+      const energyCountEl = document.getElementById('energyCount');
+      const energyMaxEl = document.getElementById('energyMax');
+      const energyLiquidEl = document.getElementById('energyLiquid');
+      const progressFill = document.getElementById('progressFill');
+      const levelNumberEl = document.getElementById('levelNumber');
+      const progressRing = document.querySelector('.progress-ring .progress');
+      const clickPowerArrowsEl = document.getElementById('clickPowerArrows');
+      const autoPowerArrowsEl = document.getElementById('autoPowerArrows');
+      const energyUpgrades = [
+        { rate: 0.5, cost: 10000 },
+        { rate: 1.0, cost: 50000 },
+        { rate: 1.5, cost: 100000 },
+        { rate: 2.0, cost: 200000 },
+        { rate: 2.5, cost: 350000 },
+        { rate: 3.0, cost: 500000 },
+        { rate: 3.5, cost: 700000 },
+        { rate: 4.0, cost: 900000 },
+        { rate: 4.5, cost: 1200000 },
+        { rate: 5.0, cost: 1500000 }
+      ];
+      const energyMaxUpgrades = [
+        { max: 2000, cost: 100000 },
+        { max: 4000, cost: 200000 },
+        { max: 8000, cost: 500000 }
+      ];
+
+      if (mustacheCountEl) mustacheCountEl.textContent = Math.floor(gameData.mustaches);
+      if (clickPowerEl) clickPowerEl.textContent = Math.floor(getClickPower());
+      if (autoPowerEl) autoPowerEl.textContent = Math.floor(getAutoPower());
+
+      if (upgradeClickBtn) {
+        upgradeClickBtn.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>
+          Upgrade Click (Cost: ${formatCost(gameData.clickUpgradeCost)})
+        `;
+        upgradeClickBtn.disabled = gameData.mustaches < gameData.clickUpgradeCost;
+      }
+      if (buyAutoBtn) {
+        buyAutoBtn.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Buy Auto Mustache (Cost: ${formatCost(gameData.autoUpgradeCost)})
+        `;
+        buyAutoBtn.disabled = gameData.mustaches < gameData.autoUpgradeCost;
+      }
+      if (upgradeEnergyBtn) {
+        if (gameData.energyUpgradeLevel < energyUpgrades.length) {
+          upgradeEnergyBtn.innerHTML = `
+            <div class="flex items-center gap-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Upgrade Energy
+            </div>
+            <span>(+${energyUpgrades[gameData.energyUpgradeLevel].rate.toFixed(1)}/s, Cost: ${formatCost(energyUpgrades[gameData.energyUpgradeLevel].cost)})</span>
+          `;
+          upgradeEnergyBtn.disabled = gameData.mustaches < energyUpgrades[gameData.energyUpgradeLevel].cost;
+        } else {
+          upgradeEnergyBtn.innerHTML = `
+            <div class="flex items-center gap-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Energy Maxed
+            </div>
+          `;
+          upgradeEnergyBtn.disabled = true;
+        }
+      }
+      if (upgradeEnergyMaxBtn) {
+        if (gameData.energyMaxUpgradeLevel < energyMaxUpgrades.length) {
+          upgradeEnergyMaxBtn.innerHTML = `
+            <div class="flex items-center gap-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Expand Flask
+            </div>
+            <span>(Next: ${energyMaxUpgrades[gameData.energyMaxUpgradeLevel].max}, Cost: ${formatCost(energyMaxUpgrades[gameData.energyMaxUpgradeLevel].cost)})</span>
+          `;
+          upgradeEnergyMaxBtn.disabled = gameData.mustaches < energyMaxUpgrades[gameData.energyMaxUpgradeLevel].cost;
+        } else {
+          upgradeEnergyMaxBtn.innerHTML = `
+            <div class="flex items-center gap-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Flask Maxed
+            </div>
+          `;
+          upgradeEnergyMaxBtn.disabled = true;
+        }
+      }
+
+      if (energyCountEl) energyCountEl.textContent = Math.floor(gameData.energy);
+      if (energyMaxEl) energyMaxEl.textContent = gameData.energyMax;
+      if (energyLiquidEl) energyLiquidEl.style.height = `${(gameData.energy / gameData.energyMax) * 100}%`;
+
+      if (progressFill) {
+        const nextCost = Math.min(
+          gameData.clickUpgradeCost,
+          gameData.autoUpgradeCost,
+          gameData.energyUpgradeLevel < energyUpgrades.length ? energyUpgrades[gameData.energyUpgradeLevel].cost : Infinity,
+          gameData.energyMaxUpgradeLevel < energyMaxUpgrades.length ? energyMaxUpgrades[gameData.energyMaxUpgradeLevel].cost : Infinity
+        );
+        const progress = Math.min((gameData.mustaches / nextCost) * 100, 100);
+        progressFill.style.width = `${progress}%`;
+        gameData.progressMaxed = progress >= 100;
+      }
+      if (levelNumberEl) levelNumberEl.textContent = gameData.level;
+      if (progressRing) {
+        const levelProgressPercent = Math.min((gameData.levelProgress / gameData.levelThreshold) * 100, 100);
+        const dashOffset = 100 - levelProgressPercent;
+        progressRing.setAttribute('stroke-dashoffset', dashOffset);
+      }
+      if (clickPowerArrowsEl) updateArrows(clickPowerArrowsEl, true);
+      if (autoPowerArrowsEl) updateArrows(autoPowerArrowsEl, false);
+    }
+
+    function createFloatingText(x, y, amount) {
+      const text = document.createElement('div');
+      text.className = 'floating-text';
+      if (gameData.levelingBonusActive) {
+        text.classList.add('floating-text-bonus');
+      } else if (gameData.progressMaxed) {
+        text.classList.add('floating-text-maxed');
+      } else {
+        text.classList.add('floating-text-normal');
+      }
+      text.textContent = `+${Math.floor(amount)} Mustaches`;
+      text.style.left = `${x}px`;
+      text.style.top = `${y}px`;
+      text.style.setProperty('--random-x', Math.random());
+      document.body.appendChild(text);
+      setTimeout(() => text.remove(), 700);
+    }
+
+    function createParticle(x, y) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      particle.style.setProperty('--random-x', Math.random());
+      particle.style.setProperty('--random-y', Math.random());
+      document.body.appendChild(particle);
+      setTimeout(() => particle.remove(), 500);
+    }
+
+    function handleClick(e) {
+      e.preventDefault();
+      if (gameData.energy < 1) return;
+      gameData.energy -= 1;
+      const mustacheImg = document.getElementById('mustache');
+      mustacheImg.classList.add('mustache-clicked');
+      const tapSound = new Audio('tap.wav');
+      tapSound.play().catch(() => {});
+      setTimeout(() => {
+        mustacheImg.classList.remove('mustache-clicked');
+      }, 100);
+      const gain = getClickPower();
+      gameData.mustaches += gain;
+      gameData.levelProgress += gain;
+      createFloatingText(e.clientX || e.pageX, e.clientY || e.pageY, gain);
+      for (let i = 0; i < 3; i++) {
+        createParticle(e.clientX || e.pageX, e.clientY || e.pageY);
+      }
+      updateLevel();
+      updateUI();
+      saveGame();
+    }
+
+    function handleTouch(e) {
+      e.preventDefault();
+      if (gameData.energy < 1) return;
+      const mustacheImg = document.getElementById('mustache');
+      const rect = mustacheImg.getBoundingClientRect();
+      Array.from(e.touches).forEach(touch => {
+        const x = touch.clientX;
+        const y = touch.clientY;
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+          gameData.energy -= 1;
+          mustacheImg.classList.add('mustache-clicked');
+          const tapSound = new Audio('tap.wav');
+          tapSound.play().catch(() => {});
+          setTimeout(() => {
+            mustacheImg.classList.remove('mustache-clicked');
+          }, 100);
+          const gain = getClickPower();
+          gameData.mustaches += gain;
+          gameData.levelProgress += gain;
+          createFloatingText(x, y, gain);
+          for (let i = 0; i < 3; i++) {
+            createParticle(x, y);
+          }
+        }
+      });
+      updateLevel();
+      updateUI();
+      saveGame();
+    }
+
+    function handleUpgradeClick() {
+      if (gameData.mustaches >= gameData.clickUpgradeCost) {
+        gameData.mustaches -= gameData.clickUpgradeCost;
+        gameData.clickPower += 1;
+        gameData.clickUpgradeCost = Math.round(gameData.clickUpgradeCost * 1.5);
+        gameData.progressMaxed = false;
+        gameData.clickPowerHotbarVisible = false;
+        gameData.autoPowerHotbarVisible = false;
+        animateArrowDisappear(document.querySelector('#clickPowerArrows .hotbar-btn'));
+        animateArrowDisappear(document.querySelector('#autoPowerArrows .hotbar-btn'));
+        updateUI();
+        saveGame();
+      }
+    }
+
+    function handleBuyAuto() {
+      if (gameData.mustaches >= gameData.autoUpgradeCost) {
+        gameData.mustaches -= gameData.autoUpgradeCost;
+        gameData.autoPower += 1;
+        gameData.autoUpgradeCost = Math.round(gameData.autoUpgradeCost * 1.7);
+        gameData.progressMaxed = false;
+        gameData.clickPowerHotbarVisible = false;
+        gameData.autoPowerHotbarVisible = false;
+        animateArrowDisappear(document.querySelector('#clickPowerArrows .hotbar-btn'));
+        animateArrowDisappear(document.querySelector('#autoPowerArrows .hotbar-btn'));
+        updateUI();
+        saveGame();
+      }
+    }
+
+    function handleUpgradeEnergy() {
+      const energyUpgrades = [
+        { rate: 0.5, cost: 10000 },
+        { rate: 1.0, cost: 50000 },
+        { rate: 1.5, cost: 100000 },
+        { rate: 2.0, cost: 200000 },
+        { rate: 2.5, cost: 350000 },
+        { rate: 3.0, cost: 500000 },
+        { rate: 3.5, cost: 700000 },
+        { rate: 4.0, cost: 900000 },
+        { rate: 4.5, cost: 1200000 },
+        { rate: 5.0, cost: 1500000 }
+      ];
+      if (gameData.energyUpgradeLevel < energyUpgrades.length && gameData.mustaches >= energyUpgrades[gameData.energyUpgradeLevel].cost) {
+        gameData.mustaches -= energyUpgrades[gameData.energyUpgradeLevel].cost;
+        gameData.energyRegenRate = energyUpgrades[gameData.energyUpgradeLevel].rate;
+        gameData.energyUpgradeLevel += 1;
+        gameData.progressMaxed = false;
+        gameData.clickPowerHotbarVisible = false;
+        gameData.autoPowerHotbarVisible = false;
+        updateUI();
+        saveGame();
+      }
+    }
+
+    function handleUpgradeEnergyMax() {
+      const energyMaxUpgrades = [
+        { max: 2000, cost: 100000 },
+        { max: 4000, cost: 200000 },
+        { max: 8000, cost: 500000 }
+      ];
+      if (gameData.energyMaxUpgradeLevel < energyMaxUpgrades.length && gameData.mustaches >= energyMaxUpgrades[gameData.energyMaxUpgradeLevel].cost) {
+        gameData.mustaches -= energyMaxUpgrades[gameData.energyMaxUpgradeLevel].cost;
+        gameData.energyMax = energyMaxUpgrades[gameData.energyMaxUpgradeLevel].max;
+        gameData.energyMaxUpgradeLevel += 1;
+        gameData.progressMaxed = false;
+        gameData.clickPowerHotbarVisible = false;
+        gameData.autoPowerHotbarVisible = false;
+        updateUI();
+        saveGame();
+      }
+    }
+
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         const page = tab.getAttribute('data-page');
@@ -243,166 +1034,10 @@
       });
     });
 
-    // Игровая логика
-    function initializeGame() {
-      let mustaches = 0;
-      let clickPower = 1;
-      let autoPower = 0;
-      let clickUpgradeCost = 10;
-      let autoUpgradeCost = 50;
-
-      const mustacheCountEl = document.getElementById('mustacheCount');
-      const clickPowerEl = document.getElementById('clickPower');
-      const autoPowerEl = document.getElementById('autoPower');
-      const clickCostEl = document.getElementById('clickCost');
-      const autoCostEl = document.getElementById('autoCost');
-      const mustacheImg = document.getElementById('mustache');
-      const upgradeClickBtn = document.getElementById('upgradeClick');
-      const buyAutoBtn = document.getElementById('buyAuto');
-      const progressFill = document.getElementById('progressFill');
-
-      function loadGame() {
-        const saved = localStorage.getItem('mustacheFamily');
-        if (saved) {
-          const data = JSON.parse(saved);
-          mustaches = data.mustaches || 0;
-          clickPower = data.clickPower || 1;
-          autoPower = data.autoPower || 0;
-          clickUpgradeCost = data.clickUpgradeCost || 10;
-          autoUpgradeCost = data.autoUpgradeCost || 50;
-        }
-        updateUI();
-      }
-
-      function saveGame() {
-        localStorage.setItem('mustacheFamily', JSON.stringify({
-          mustaches,
-          clickPower,
-          autoPower,
-          clickUpgradeCost,
-          autoUpgradeCost
-        }));
-      }
-
-      function updateUI() {
-        if (mustacheCountEl) mustacheCountEl.textContent = Math.floor(mustaches);
-        if (clickPowerEl) clickPowerEl.textContent = clickPower;
-        if (autoPowerEl) autoPowerEl.textContent = autoPower;
-        if (clickCostEl) clickCostEl.textContent = clickUpgradeCost;
-        if (autoCostEl) autoCostEl.textContent = autoUpgradeCost;
-        if (upgradeClickBtn) upgradeClickBtn.disabled = mustaches < clickUpgradeCost;
-        if (buyAutoBtn) buyAutoBtn.disabled = mustaches < autoUpgradeCost;
-        if (progressFill) {
-          const nextCost = Math.min(clickUpgradeCost, autoUpgradeCost);
-          const progress = Math.min((mustaches / nextCost) * 100, 100);
-          progressFill.style.width = `${progress}%`;
-        }
-      }
-
-      function createFloatingText(x, y, amount) {
-        const text = document.createElement('div');
-        text.className = 'floating-text';
-        text.textContent = `+${amount} Mustaches`;
-        text.style.left = `${x}px`;
-        text.style.top = `${y}px`;
-        text.style.setProperty('--random-x', Math.random());
-        document.body.appendChild(text);
-        setTimeout(() => text.remove(), 700);
-      }
-
-      function createParticle(x, y) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = `${x}px`;
-        particle.style.top = `${y}px`;
-        particle.style.setProperty('--random-x', Math.random());
-        particle.style.setProperty('--random-y', Math.random());
-        document.body.appendChild(particle);
-        setTimeout(() => particle.remove(), 500);
-      }
-
-      function handleClick(e) {
-        e.preventDefault();
-        mustacheImg.classList.add('mustache-clicked');
-        const tapSound = new Audio('tap.wav');
-        tapSound.play().catch(() => {});
-        setTimeout(() => {
-          mustacheImg.classList.remove('mustache-clicked');
-        }, 100);
-        mustaches += clickPower;
-        createFloatingText(e.clientX || e.pageX, e.clientY || e.pageY, clickPower);
-        for (let i = 0; i < 3; i++) {
-          createParticle(e.clientX || e.pageX, e.clientY || e.pageY);
-        }
-        updateUI();
-        saveGame();
-      }
-
-      function handleTouch(e) {
-        e.preventDefault();
-        const rect = mustacheImg.getBoundingClientRect();
-        Array.from(e.touches).forEach(touch => {
-          const x = touch.clientX;
-          const y = touch.clientY;
-          // Проверка, находится ли касание внутри изображения усов
-          if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-            mustacheImg.classList.add('mustache-clicked');
-            const tapSound = new Audio('tap.wav');
-            tapSound.play().catch(() => {});
-            setTimeout(() => {
-              mustacheImg.classList.remove('mustache-clicked');
-            }, 100);
-            mustaches += clickPower;
-            createFloatingText(x, y, clickPower);
-            for (let i = 0; i < 3; i++) {
-              createParticle(x, y);
-            }
-          }
-        });
-        updateUI();
-        saveGame();
-      }
-
-      if (mustacheImg) {
-        mustacheImg.addEventListener('click', handleClick);
-        mustacheImg.addEventListener('touchstart', handleTouch, { passive: false });
-      }
-
-      if (upgradeClickBtn) {
-        upgradeClickBtn.addEventListener('click', () => {
-          if (mustaches >= clickUpgradeCost) {
-            mustaches -= clickUpgradeCost;
-            clickPower += 1;
-            clickUpgradeCost = Math.round(clickUpgradeCost * 1.5);
-            updateUI();
-            saveGame();
-          }
-        });
-      }
-
-      if (buyAutoBtn) {
-        buyAutoBtn.addEventListener('click', () => {
-          if (mustaches >= autoUpgradeCost) {
-            mustaches -= autoUpgradeCost;
-            autoPower += 1;
-            autoUpgradeCost = Math.round(autoUpgradeCost * 1.7);
-            updateUI();
-            saveGame();
-          }
-        });
-      }
-
-      setInterval(() => {
-        mustaches += autoPower / 10;
-        updateUI();
-        saveGame();
-      }, 100);
-
-      loadGame();
+    if (document.getElementById('content').innerHTML.includes('Mustache Family')) {
+      initializeGame();
+      gameInitialized = true;
     }
-
-    // Инициализация игры при загрузке страницы
-    initializeGame();
   </script>
 </body>
 </html>
