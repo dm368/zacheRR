@@ -15,6 +15,7 @@
       padding-bottom: 56px;
       margin: 0;
       min-height: 100vh;
+      position: relative;
     }
     .container {
       border: 1px solid rgba(31, 37, 38, 0.5);
@@ -240,16 +241,17 @@
     @keyframes modal-pop {
       to { transform: translate(-50%, -50%) scale(1); }
     }
-    .energy-flask-container {
-      position: absolute;
-      left: 0.85rem;
-      top: 15.5rem;
-      width: 20px;
-      height: 190px;
+    .energy-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
     }
     .energy-flask {
-      width: 100%;
-      height: 100%;
+      width: 190px;
+      height: 20px;
       background: url('flask.png') no-repeat center;
       background-size: contain;
       position: relative;
@@ -259,39 +261,59 @@
     }
     .energy-liquid {
       position: absolute;
-      bottom: 0;
+      left: 0;
       width: 100%;
+      height: 100%;
       background: #1c6ea4;
-      transition: height 0.3s ease;
+      transition: width 0.3s ease;
+      transform-origin: left;
     }
     .energy-counter-container {
-      position: absolute;
-      left: -0.25rem;
-      top: -3.5rem;
-      width: 70px;
-      text-align: center;
+      display: inline-flex;
+      align-items: center;
       background: #1c2526;
       border: 1px solid rgba(31, 37, 38, 0.5);
       border-radius: 0.5rem;
-      padding: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      min-width: 100px;
     }
     .energy-counter {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       color: #e4e4e7;
+      margin: 0;
+      text-align: center;
+      width: 100%;
+    }
+    .sound-toggle {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 30px;
+      height: 30px;
+      background-color: #1f2526;
+      border: 1px solid rgba(31, 37, 38, 0.5);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #e4e4e7;
+      transition: background-color 0.2s;
+    }
+    .sound-toggle:hover {
+      background-color: #2d3536;
+    }
+    .sound-toggle.active {
+      color: #7f1d1f;
     }
   </style>
 </head>
 <body class="text-gray-200 flex flex-col items-center">
-  <div id="content" class="w-full max-w-sm mt-2">
+  <div id="content" class="w-full max-w-sm mt-2 relative">
+    <div class="sound-toggle" id="soundToggle">🔊</div>
     <div class="container relative">
-      <div class="energy-flask-container">
-        <div class="energy-counter-container">
-          <p class="energy-counter">Energy: <span id="energyCount">1000</span>/<span id="energyMax">1000</span></p>
-        </div>
-        <div class="energy-flask">
-          <div id="energyLiquid" class="energy-liquid" style="height: 100%"></div>
-        </div>
-      </div>
       <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
       <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg relative">
         <div class="level-container">
@@ -306,6 +328,14 @@
         <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span><span id="autoPowerArrows"></span></p>
         <div class="progress-bar h-2 mt-2">
           <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="energy-row">
+          <button class="energy-counter-container" id="energyCounterBtn">
+            <p class="energy-counter">Energy <span id="energyCount">1000</span>/<span id="energyMax">1000</span></p>
+          </button>
+          <div class="energy-flask">
+            <div id="energyLiquid" class="energy-liquid" style="width: 100%"></div>
+          </div>
         </div>
       </div>
       <div class="flex justify-center mb-4">
@@ -350,21 +380,15 @@
     let gameState = null;
     let gameInitialized = false;
     let autoInterval = null;
+    let soundEnabled = true;
 
     function loadPage(page) {
       const contentDiv = document.getElementById('content');
       try {
         if (page === 'main') {
           contentDiv.innerHTML = `
+            <div class="sound-toggle" id="soundToggle">${soundEnabled ? '🔊' : '🔇'}</div>
             <div class="container relative">
-              <div class="energy-flask-container">
-                <div class="energy-counter-container">
-                  <p class="energy-counter">Energy: <span id="energyCount">1000</span>/<span id="energyMax">1000</span></p>
-                </div>
-                <div class="energy-flask">
-                  <div id="energyLiquid" class="energy-liquid" style="height: 100%"></div>
-                </div>
-              </div>
               <h1 class="text-4xl font-extrabold text-center mb-2">Mustache Family</h1>
               <div class="text-center mb-3 bg-gray-900 rounded-lg p-3 shadow-lg relative">
                 <div class="level-container">
@@ -379,6 +403,14 @@
                 <p class="text-lg">Auto Mustaches/s: <span id="autoPower">0</span><span id="autoPowerArrows"></span></p>
                 <div class="progress-bar h-2 mt-2">
                   <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="energy-row">
+                  <button class="energy-counter-container" id="energyCounterBtn">
+                    <p class="energy-counter">Energy <span id="energyCount">1000</span>/<span id="energyMax">1000</span></p>
+                  </button>
+                  <div class="energy-flask">
+                    <div id="energyLiquid" class="energy-liquid" style="width: 100%"></div>
+                  </div>
                 </div>
               </div>
               <div class="flex justify-center mb-4">
@@ -460,7 +492,9 @@
         clickPowerHotbarVisible: false,
         clickPowerLevelVisible: false,
         autoPowerHotbarVisible: false,
-        autoPowerLevelVisible: false
+        autoPowerLevelVisible: false,
+        soundEnabled: true,
+        lastSaveTime: Date.now()
       };
 
       loadGame();
@@ -475,6 +509,8 @@
       const upgradeEnergyBtn = document.getElementById('upgradeEnergy');
       const upgradeEnergyMaxBtn = document.getElementById('upgradeEnergyMax');
       const levelContainer = document.querySelector('.level-container');
+      const energyCounterBtn = document.getElementById('energyCounterBtn');
+      const soundToggle = document.getElementById('soundToggle');
 
       if (mustacheImg) {
         mustacheImg.removeEventListener('click', handleClick);
@@ -501,6 +537,14 @@
       if (levelContainer) {
         levelContainer.removeEventListener('click', showLevelModal);
         levelContainer.addEventListener('click', showLevelModal);
+      }
+      if (energyCounterBtn) {
+        energyCounterBtn.removeEventListener('click', showEnergyModal);
+        energyCounterBtn.addEventListener('click', showEnergyModal);
+      }
+      if (soundToggle) {
+        soundToggle.removeEventListener('click', toggleSound);
+        soundToggle.addEventListener('click', toggleSound);
       }
     }
 
@@ -541,12 +585,25 @@
         gameData.level = data.level || 1;
         gameData.levelProgress = data.levelProgress || 0;
         gameData.levelThreshold = data.levelThreshold || 1000;
-        gameData.levelingBonusActive = data.levelBonusActive || false;
+        gameData.levelingBonusActive = data.levelingBonusActive || false;
         gameData.levelBonusEndTime = data.levelBonusEndTime || 0;
         gameData.clickPowerHotbarVisible = data.clickPowerHotbarVisible || false;
         gameData.clickPowerLevelVisible = data.clickPowerLevelVisible || false;
         gameData.autoPowerHotbarVisible = data.autoPowerHotbarVisible || false;
         gameData.autoPowerLevelVisible = data.autoPowerLevelVisible || false;
+        gameData.soundEnabled = data.soundEnabled !== undefined ? data.soundEnabled : true;
+        gameData.lastSaveTime = data.lastSaveTime || Date.now();
+
+        // Offline progress calculation
+        const currentTime = Date.now();
+        const offlineTime = (currentTime - gameData.lastSaveTime) / 1000; // Time in seconds
+        const offlineMustaches = gameData.autoPower * offlineTime;
+        const offlineEnergy = gameData.energyRegenRate * offlineTime;
+
+        gameData.mustaches += offlineMustaches;
+        gameData.levelProgress += offlineMustaches;
+        gameData.energy = Math.min(gameData.energyMax, gameData.energy + offlineEnergy);
+
         if (gameData.levelingBonusActive && gameData.levelBonusEndTime > Date.now()) {
           setTimeout(() => {
             gameData.levelingBonusActive = false;
@@ -562,11 +619,16 @@
           gameData.clickPowerLevelVisible = false;
           gameData.autoPowerLevelVisible = false;
         }
+
+        updateLevel(); // Update level after offline progress
       }
+      soundEnabled = gameData.soundEnabled;
       updateUI();
     }
 
     function saveGame() {
+      gameData.soundEnabled = soundEnabled;
+      gameData.lastSaveTime = Date.now();
       localStorage.setItem('mustacheFamily', JSON.stringify(gameData));
       gameState = { ...gameData };
     }
@@ -574,6 +636,7 @@
     function restoreGameState() {
       if (gameState) {
         gameData = { ...gameState };
+        soundEnabled = gameData.soundEnabled;
         if (gameData.levelingBonusActive && gameData.levelBonusEndTime > Date.now()) {
           setTimeout(() => {
             gameData.levelingBonusActive = false;
@@ -590,6 +653,11 @@
           gameData.autoPowerLevelVisible = false;
         }
         updateUI();
+      }
+      const soundToggle = document.getElementById('soundToggle');
+      if (soundToggle) {
+        soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+        soundToggle.classList.toggle('active', !soundEnabled);
       }
     }
 
@@ -641,6 +709,9 @@
       } else if (type === 'levelInfo') {
         title = 'Your Level';
         message = `You are at Level ${gameData.level}. Each level increases the mustache requirement for the next level. Upon reaching a new level, you get a 30-second boost that doubles your click and auto mustache gains!`;
+      } else if (type === 'energyInfo') {
+        title = 'Energy System';
+        message = `Energy is consumed with each click on the mustache. It regenerates over time based on your regen rate. Upgrade your energy regen or expand your flask to increase capacity!<br><br>Regen: ${gameData.energyRegenRate.toFixed(1)}/s<br>Capacity: ${gameData.energyMax}`;
       }
       modal.innerHTML = `
         <h2 class="text-xl font-semibold mb-2">${title}</h2>
@@ -660,6 +731,10 @@
       showModal('levelInfo');
     }
 
+    function showEnergyModal() {
+      showModal('energyInfo');
+    }
+
     function animateArrowDisappear(btn) {
       if (btn) {
         btn.classList.remove('arrow-appear');
@@ -670,6 +745,16 @@
       }
     }
 
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const soundToggle = document.getElementById('soundToggle');
+      if (soundToggle) {
+        soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+        soundToggle.classList.toggle('active', !soundEnabled);
+      }
+      saveGame();
+    }
+
     function updateArrows(container, isClickPower) {
       const currentHotbarBtn = container.querySelector('.hotbar-btn');
       const currentLevelBtn = container.querySelector('.level-btn');
@@ -677,10 +762,8 @@
       const shouldShowLevel = gameData.levelingBonusActive;
       const hotbarVisibleKey = isClickPower ? 'clickPowerHotbarVisible' : 'autoPowerHotbarVisible';
       const levelVisibleKey = isClickPower ? 'clickPowerLevelVisible' : 'autoPowerLevelVisible';
-
       let buttons = [];
 
-      // Проверяем Hotbar Button
       if (shouldShowHotbar && !gameData[hotbarVisibleKey]) {
         buttons.push(`
           <button class="boost-btn hotbar-btn arrow-appear">
@@ -705,7 +788,6 @@
         `);
       }
 
-      // Проверяем Level Button
       if (shouldShowLevel && !gameData[levelVisibleKey]) {
         buttons.push(`
           <button class="boost-btn level-btn arrow-appear">
@@ -770,17 +852,18 @@
       const progressRing = document.querySelector('.progress-ring .progress');
       const clickPowerArrowsEl = document.getElementById('clickPowerArrows');
       const autoPowerArrowsEl = document.getElementById('autoPowerArrows');
+      const soundToggle = document.getElementById('soundToggle');
       const energyUpgrades = [
-        { rate: 0.5, cost: 10000 },
-        { rate: 1.0, cost: 50000 },
-        { rate: 1.5, cost: 100000 },
-        { rate: 2.0, cost: 200000 },
-        { rate: 2.5, cost: 350000 },
-        { rate: 3.0, cost: 500000 },
-        { rate: 3.5, cost: 700000 },
-        { rate: 4.0, cost: 900000 },
-        { rate: 4.5, cost: 1200000 },
-        { rate: 5.0, cost: 1500000 }
+        { rateIncrease: 0.5, cost: 10000 },
+        { rateIncrease: 1.0, cost: 50000 },
+        { rateIncrease: 1.5, cost: 100000 },
+        { rateIncrease: 2.0, cost: 200000 },
+        { rateIncrease: 2.5, cost: 350000 },
+        { rateIncrease: 3.0, cost: 500000 },
+        { rateIncrease: 3.5, cost: 700000 },
+        { rateIncrease: 4.0, cost: 900000 },
+        { rateIncrease: 4.5, cost: 1200000 },
+        { rateIncrease: 5.0, cost: 1500000 }
       ];
       const energyMaxUpgrades = [
         { max: 2000, cost: 100000 },
@@ -813,7 +896,7 @@
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
               Upgrade Energy
             </div>
-            <span>(+${energyUpgrades[gameData.energyUpgradeLevel].rate.toFixed(1)}/s, Cost: ${formatCost(energyUpgrades[gameData.energyUpgradeLevel].cost)})</span>
+            <span>(+${energyUpgrades[gameData.energyUpgradeLevel].rateIncrease.toFixed(1)}/s, Cost: ${formatCost(energyUpgrades[gameData.energyUpgradeLevel].cost)})</span>
           `;
           upgradeEnergyBtn.disabled = gameData.mustaches < energyUpgrades[gameData.energyUpgradeLevel].cost;
         } else {
@@ -849,7 +932,10 @@
 
       if (energyCountEl) energyCountEl.textContent = Math.floor(gameData.energy);
       if (energyMaxEl) energyMaxEl.textContent = gameData.energyMax;
-      if (energyLiquidEl) energyLiquidEl.style.height = `${(gameData.energy / gameData.energyMax) * 100}%`;
+      if (energyLiquidEl) {
+        const energyPercent = Math.max(0, Math.min(100, (gameData.energy / gameData.energyMax) * 100));
+        energyLiquidEl.style.width = `${energyPercent}%`;
+      }
 
       if (progressFill) {
         const nextCost = Math.min(
@@ -870,6 +956,10 @@
       }
       if (clickPowerArrowsEl) updateArrows(clickPowerArrowsEl, true);
       if (autoPowerArrowsEl) updateArrows(autoPowerArrowsEl, false);
+      if (soundToggle) {
+        soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+        soundToggle.classList.toggle('active', !soundEnabled);
+      }
     }
 
     function createFloatingText(x, y, amount) {
@@ -887,6 +977,10 @@
       text.style.top = `${y}px`;
       text.style.setProperty('--random-x', Math.random());
       document.body.appendChild(text);
+      if (soundEnabled) {
+        const tapSound = new Audio('tap.wav');
+        tapSound.play().catch(() => {});
+      }
       setTimeout(() => text.remove(), 700);
     }
 
@@ -907,8 +1001,6 @@
       gameData.energy -= 1;
       const mustacheImg = document.getElementById('mustache');
       mustacheImg.classList.add('mustache-clicked');
-      const tapSound = new Audio('tap.wav');
-      tapSound.play().catch(() => {});
       setTimeout(() => {
         mustacheImg.classList.remove('mustache-clicked');
       }, 100);
@@ -935,8 +1027,6 @@
         if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
           gameData.energy -= 1;
           mustacheImg.classList.add('mustache-clicked');
-          const tapSound = new Audio('tap.wav');
-          tapSound.play().catch(() => {});
           setTimeout(() => {
             mustacheImg.classList.remove('mustache-clicked');
           }, 100);
@@ -986,20 +1076,20 @@
 
     function handleUpgradeEnergy() {
       const energyUpgrades = [
-        { rate: 0.5, cost: 10000 },
-        { rate: 1.0, cost: 50000 },
-        { rate: 1.5, cost: 100000 },
-        { rate: 2.0, cost: 200000 },
-        { rate: 2.5, cost: 350000 },
-        { rate: 3.0, cost: 500000 },
-        { rate: 3.5, cost: 700000 },
-        { rate: 4.0, cost: 900000 },
-        { rate: 4.5, cost: 1200000 },
-        { rate: 5.0, cost: 1500000 }
+        { rateIncrease: 0.5, cost: 10000 },
+        { rateIncrease: 1.0, cost: 50000 },
+        { rateIncrease: 1.5, cost: 100000 },
+        { rateIncrease: 2.0, cost: 200000 },
+        { rateIncrease: 2.5, cost: 350000 },
+        { rateIncrease: 3.0, cost: 500000 },
+        { rateIncrease: 3.5, cost: 700000 },
+        { rateIncrease: 4.0, cost: 900000 },
+        { rateIncrease: 4.5, cost: 1200000 },
+        { rateIncrease: 5.0, cost: 1500000 }
       ];
       if (gameData.energyUpgradeLevel < energyUpgrades.length && gameData.mustaches >= energyUpgrades[gameData.energyUpgradeLevel].cost) {
         gameData.mustaches -= energyUpgrades[gameData.energyUpgradeLevel].cost;
-        gameData.energyRegenRate = energyUpgrades[gameData.energyUpgradeLevel].rate;
+        gameData.energyRegenRate += energyUpgrades[gameData.energyUpgradeLevel].rateIncrease;
         gameData.energyUpgradeLevel += 1;
         gameData.progressMaxed = false;
         gameData.clickPowerHotbarVisible = false;
@@ -1018,6 +1108,7 @@
       if (gameData.energyMaxUpgradeLevel < energyMaxUpgrades.length && gameData.mustaches >= energyMaxUpgrades[gameData.energyMaxUpgradeLevel].cost) {
         gameData.mustaches -= energyMaxUpgrades[gameData.energyMaxUpgradeLevel].cost;
         gameData.energyMax = energyMaxUpgrades[gameData.energyMaxUpgradeLevel].max;
+        gameData.energy = Math.min(gameData.energy, gameData.energyMax);
         gameData.energyMaxUpgradeLevel += 1;
         gameData.progressMaxed = false;
         gameData.clickPowerHotbarVisible = false;
